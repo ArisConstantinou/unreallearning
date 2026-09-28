@@ -134,6 +134,9 @@ test('the attack carries the blade outside the face while the hand follows its a
       separation = Math.min(separation, Math.hypot(...p.map((v, j) => v - face[j])));
     }
     assert.ok(separation > .15, `blade too close to face at ${time.toFixed(3)} s: ${separation.toFixed(3)} m`);
+    if (time >= .18 && time <= .4) {
+      assert.ok(scene.rig.sword.grip[12] > face[0] + .25, `windup grip crosses the face at ${time.toFixed(3)} s`);
+    }
     handHeights.push(position(scene.rig.arms[1].hand)[1]);
   }
   assert.ok(Math.max(...handHeights) - Math.min(...handHeights) > .35, 'sword hand needs a visible attack arc');
