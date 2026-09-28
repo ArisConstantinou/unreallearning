@@ -137,13 +137,13 @@ test('both shoes touch the floor in the initial idle pose', () => {
   for (const y of lowestLegPoints(scene)) assert.ok(Math.abs(y) < 0.01, `shoe height ${y} m`);
 });
 
-test('the sword visibly follows an idle arm motion', () => {
+test('the sword and hands stay still before any animation is built', () => {
   const scene = makeScene();
   scene.build(0);
-  const start = scene.objects.filter(object => object.part === 'arms').at(-1).m.slice(12, 15);
+  const start = scene.objects.filter(object => ['arms', 'body', 'legs', 'head'].includes(object.part)).map(object => object.m.slice());
   scene.build(500);
-  const end = scene.objects.filter(object => object.part === 'arms').at(-1).m.slice(12, 15);
-  assert.ok(Math.hypot(...start.map((value, i) => value - end[i])) > 0.006);
+  const end = scene.objects.filter(object => ['arms', 'body', 'legs', 'head'].includes(object.part)).map(object => object.m.slice());
+  assert.deepEqual(end, start);
 });
 
 test('the sword stays above the floor throughout the idle loop', () => {
@@ -223,7 +223,7 @@ test('the attack carries the blade outside the face while the hand follows its a
   assert.ok(Math.max(...handHeights) - Math.min(...handHeights) > .35, 'sword hand needs a visible attack arc');
 });
 
-test('idle animation follows simulation time so pause freezes the pose', () => {
+test('idle pose stays still as simulation time advances', () => {
   let simTime = 0;
   const scene = makeScene(() => simTime);
   scene.build(0);
@@ -233,5 +233,5 @@ test('idle animation follows simulation time so pause freezes the pose', () => {
   assert.deepEqual(pose(), start);
   simTime = 0.5;
   scene.build(1000);
-  assert.ok(Math.hypot(...pose().map((value, i) => value - start[i])) > 0.006);
+  assert.deepEqual(pose(), start);
 });
