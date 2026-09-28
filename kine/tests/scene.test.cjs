@@ -58,8 +58,9 @@ test('both arms swing independently and the sword stays fixed in the right grip'
     world.phase = phase;
     scene.build(1000);
     assert.ok(scene.rig?.arms?.[-1]?.hand && scene.rig?.arms?.[1]?.hand && scene.rig?.sword?.grip);
-    const right = position(scene.rig.arms[1].hand), grip = position(scene.rig.sword.grip);
-    assert.ok(Math.hypot(...right.map((v, i) => v - grip[i])) < .09, 'sword grip leaves hand');
+    const hand = scene.rig.arms[1].hand, grip = position(scene.rig.sword.grip);
+    const socket = point(hand, [0, .06, .10]);
+    assert.ok(Math.hypot(...socket.map((v, i) => v - grip[i])) < .001, 'sword grip leaves hand');
     return [-1, 1].map(side => position(scene.rig.arms[side].hand));
   });
   for (const side of [0, 1]) assert.ok(Math.abs(hands[0][side][2] - hands[1][side][2]) > .12);
@@ -82,7 +83,7 @@ test('the blade runs straight through the sword hand in every pose', () => {
   }
 });
 
-test('the sword guard meets the gripping fingers instead of hanging below them', () => {
+test('the handle sits in front of the palm and the guard rests below the curled fingers', () => {
   const scene = makeScene();
   const world = scene.world();
   for (const attack of [0, 1]) {
@@ -90,8 +91,11 @@ test('the sword guard meets the gripping fingers instead of hanging below them',
     world.montageTime = attack ? .3 : 0;
     scene.build(1000);
     const guard = point(scene.rig.sword.grip, [0, .135, 0]);
-    const fingers = point(scene.rig.arms[1].hand, [0, -.06, .067]);
-    assert.ok(Math.hypot(...guard.map((v, i) => v - fingers[i])) < .055, 'guard is detached from the hand');
+    const fingers = point(scene.rig.arms[1].hand, [0, -.06, .11]);
+    assert.ok(Math.hypot(...guard.map((v, i) => v - fingers[i])) < .03, 'guard is detached from the curled fingers');
+    const handle = position(scene.rig.sword.grip);
+    const palmFront = point(scene.rig.arms[1].hand, [0, .06, .10]);
+    assert.ok(Math.hypot(...handle.map((v, i) => v - palmFront[i])) < .022, 'handle does not pass through the grip');
   }
 });
 
