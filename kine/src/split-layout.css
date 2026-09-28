@@ -94,6 +94,22 @@
 .hero-speech-actions{display:flex;gap:6px;flex-wrap:wrap;margin-top:3px}
 .hero-speech-actions button{min-height:34px;padding:6px 8px;font-size:12px;border-color:#75a78d;background:#cae6d2;color:#14372a;font-weight:600}
 .hero-speech-actions #hearHero{background:transparent}
+.journey-chapters{margin:0 0 14px}
+.chapter-heading{display:flex;justify-content:space-between;gap:10px;margin:0 0 9px;color:#9cdbbf;font:700 12px var(--mono);letter-spacing:.8px}
+.chapter-cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.chapter-card{min-width:0;padding:11px 10px;border:1px solid #405650;border-radius:10px;background:#17262a;color:#bbd2cb}
+.chapter-card.current{border-color:#9cdbbf;background:#213a33;box-shadow:inset 0 0 0 1px #9cdbbf44}
+.chapter-card.done{border-color:#ad9566;background:#303127}
+.chapter-card-top{display:flex;justify-content:space-between;align-items:center;gap:4px;font:700 12px var(--mono);color:#98c9b4}
+.chapter-card.done .chapter-card-top{color:#ead08f}
+.chapter-card h3{font-size:15px;line-height:1.2;margin:8px 0 5px;color:#f0f3ed}
+.chapter-card p{font-size:12px;line-height:1.35;margin:0 0 10px;color:#a9beb8}
+.chapter-card .chapter-task{font-size:12px;min-height:32px;color:#d8e8df}
+.chapter-card progress{display:block;width:100%;height:6px;margin-top:8px;accent-color:#9cdbbf}
+.chapter-card.done progress{accent-color:#e8ca82}
+.replay-walk{margin-top:10px;min-height:36px;padding:7px 10px;border-color:#a68f5c;color:#f3d58b;background:#393329;font-size:12px}
+.journey-result{padding:14px;margin:0 0 14px;border:1px solid #b9a46a;border-radius:12px;background:#29372c;color:#eaf7eb}
+.journey-result h3{margin:5px 0;font-size:20px}.journey-result p{margin:0;font-size:13px;line-height:1.45}
 .award-shelf{padding:12px 14px;margin:0 0 14px;border:1px solid #655c3e;border-radius:12px;background:#242b26}
 .award-heading{display:flex;justify-content:space-between;gap:12px;color:#e8ca82;font:700 12px var(--mono);letter-spacing:1px;margin-bottom:9px}
 .award-list{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px}
@@ -101,12 +117,12 @@
 .award i{font-style:normal;font-size:18px;line-height:1;color:#707b75}
 .award.earned{border-color:#b9a46a;background:#423b29;color:#fff0c6}
 .award.earned i{color:#f3d27e}
-@media(max-width:899px){.hero-speech{top:47px;left:10px;right:auto;width:min(185px,48%);padding:9px 11px;gap:3px}.hero-speech strong{font-size:14px}.hero-speech #heroStep{font-size:12px}.hero-speech-actions button{font-size:12px;min-height:30px}.award-list{display:flex;overflow-x:auto;scrollbar-width:thin}.award{min-width:110px}}
+@media(max-width:899px){.hero-speech{top:47px;left:10px;right:auto;width:min(185px,48%);padding:9px 11px;gap:3px}.hero-speech strong{font-size:14px}.hero-speech #heroStep{font-size:12px}.hero-speech-actions button{font-size:12px;min-height:30px}.chapter-cards{gap:5px}.chapter-card{padding:8px 6px}.chapter-card h3{font-size:13px}.award-list{display:flex;overflow-x:auto;scrollbar-width:thin}.award{min-width:110px}}
 @media(max-width:390px){.hero-speech{top:40px;width:44%;max-width:165px}.hero-speech strong{font-size:14px}.hero-speech #heroStep{font-size:12px}.hero-speech-actions button{min-height:40px}.hero-speech::after{left:auto;right:20px;border-width:11px 0 0 11px}}
 .award-earned{margin:3px 0 8px;color:#f1d38b!important;font-weight:700}
 
 @media(min-width:900px){#app.split-layout.guided-lesson .lesson-card.is-complete>.award-earned{grid-column:1;grid-row:3}#app.split-layout.guided-lesson .lesson-card.is-complete>p:not(.award-earned){grid-column:1;grid-row:4}#app.split-layout.guided-lesson .lesson-card.is-complete>.lesson-actions{grid-column:2;grid-row:4}}
 
-@media(max-width:390px){.hero-speech #heroStep,.hero-speech-actions #heroAction{display:none}.hero-speech-actions #hearHero{display:block;min-height:40px}}
+@media(max-width:390px){.hero-speech-actions #heroAction{display:none}.hero-speech #heroStep{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:3;overflow:hidden}.hero-speech-actions #hearHero{display:block;min-height:40px}}
 
 @media(max-width:390px){.hero-speech{top:35px}.hero-speech::after{display:none}}

@@ -9,9 +9,11 @@
 </section>
 <section id="workshop" class="workshop" hidden aria-label="Εργαστήριο Blueprint">
 <header class="panelhead"><div><span id="panelEyebrow" class="eyebrow">ΕΠΙΛΕΓΜΕΝΟ ΣΥΣΤΗΜΑ</span><h2 id="panelTitle">Πόδια</h2><p id="panelSubtitle"></p></div><button id="collapseBtn" class="iconbtn" aria-label="Σύμπτυξη panel">⌃</button></header>
-<div id="awardShelf" class="award-shelf" aria-label="Βραβεία διάσωσης" hidden><div class="award-heading"><span>ΤΑ ΒΡΑΒΕΙΑ ΣΟΥ</span><strong id="awardCount">0 / 5</strong></div><div id="awardList" class="award-list"></div></div>
+<section id="journeyChapters" class="journey-chapters" aria-label="Κεφάλαια διάσωσης"><div class="chapter-heading"><span>ΤΑ 3 ΚΕΦΑΛΑΙΑ</span><strong id="chapterOverall">0% συνολικά</strong></div><div id="chapterCards" class="chapter-cards"></div></section>
+<div id="awardShelf" class="award-shelf" aria-label="Βραβεία διάσωσης" hidden><div class="award-heading"><span>ΤΑ ΒΡΑΒΕΙΑ ΣΟΥ</span><strong id="awardCount">0 / 5</strong></div><div id="awardList" class="award-list"></div><button id="replayWalk" class="replay-walk" type="button" hidden>Δες ξανά τα πρώτα μου βήματα</button></div>
+<section id="journeyResult" class="journey-result" aria-label="Τελικό αποτέλεσμα" hidden></section>
 <div id="stepCue" class="step-cue" hidden aria-live="polite"></div>
-<div class="modebar" role="group" aria-label="Τρόπος μάθησης"><button data-mode="explore" class="active">01 <span>Δες πώς δουλεύει</span></button><button data-mode="learn">02 <span>Μάθε φτιάχνοντάς το</span></button><button data-mode="free">03 <span>Ελεύθερα</span></button></div>
+<div class="modebar" role="group" aria-label="Τρόπος μάθησης"><button data-mode="explore"><span>Δες πώς δουλεύει</span></button><button data-mode="learn" class="active"><span>Μάθε φτιάχνοντάς το</span></button><button data-mode="free"><span>Ελεύθερα</span></button></div>
 <div class="contextbar"><div class="graph-tabs"><button id="eventTab" class="active">Event Graph<small>εντολές</small></button><button id="animTab">AnimGraph<small>πόζες σώματος</small></button></div><label class="preset-label">Συνδυασμός<select id="presetSelect" aria-label="Επιλογή preset"></select></label><label id="keyToggle" class="key-toggle" hidden><input id="hasKey" type="checkbox"> Έχω κλειδί</label></div>
 <div id="semanticNote" class="semantic-note"></div>
 <div class="workspace-grid"><div class="graph-column">
