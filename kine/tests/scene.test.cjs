@@ -97,10 +97,14 @@ test('a curled sword grip and a relaxed free hand have correctly rooted thumbs',
   };
   const swordFingerHeights = [0, 2, 4, 6].map(i => local(right.hand, right.fingers[i], 1));
   assert.ok(swordFingerHeights[0] - swordFingerHeights[3] > .08, 'sword fingers do not follow the hilt');
-  assert.ok(local(right.hand, right.thumb[0], 0) < 0 && local(right.hand, right.fingers[0], 0) > 0,
-    'sword thumb and fingers must close from opposite sides');
-  assert.ok(local(right.hand, right.thumb[1], 0) > local(right.hand, right.thumb[0], 0),
-    'sword thumb tip must curl toward the handle');
+  assert.ok(right.palm, 'the sword hand needs a continuous palm');
+  assert.ok(local(right.hand, right.palm, 0) > .03, 'the sword hand should sit beside the vertical hilt');
+  assert.ok(Math.hypot(right.palm[4], right.palm[5], right.palm[6]) > .13,
+    'the back of the sword hand should read as one full fist');
+  assert.ok(local(right.hand, right.thumb[0], 0) > .02 && local(right.hand, right.thumb[1], 0) < 0,
+    'the sword thumb must cross the hilt from the palm side');
+  assert.ok(right.fingers.every(finger => local(right.hand, finger, 2) < .09),
+    'curled fingers should stay mostly behind the hilt from the entry camera');
   assert.ok(local(left.hand, left.fingers[1], 1) < -.12, 'free fingers should hang below the palm');
   assert.ok(local(left.hand, left.thumb[0], 0) > 0 && local(left.hand, left.thumb[1], 0) > local(left.hand, left.thumb[0], 0),
     'free thumb should grow from the inner edge of the palm');
