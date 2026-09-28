@@ -65,6 +65,22 @@ test('both arms swing independently and the sword stays fixed in the right grip'
   assert.ok((hands[0][0][2] - hands[1][0][2]) * (hands[0][1][2] - hands[1][1][2]) < 0);
 });
 
+test('the blade runs straight through the sword hand in every pose', () => {
+  const scene = makeScene();
+  const world = scene.world();
+  for (const [walk, phase, attack, montageTime] of [[0, 0, 0, 0], [1, 0, 0, 0], [1, Math.PI, 0, 0], [0, 0, 1, .3], [0, 0, 1, .65]]) {
+    Object.assign(world.pose, { walk, attack });
+    world.phase = phase;
+    world.montageTime = montageTime;
+    scene.build(1000);
+    const hand = scene.rig.arms[1].hand, sword = scene.rig.sword.grip;
+    const handAxis = [-hand[4], -hand[5], -hand[6]];
+    const bladeAxis = [sword[4], sword[5], sword[6]];
+    const alignment = handAxis.reduce((sum, value, i) => sum + value * bladeAxis[i], 0);
+    assert.ok(alignment > .98, `crooked grip in pose ${JSON.stringify([walk, phase, attack, montageTime])}: ${alignment}`);
+  }
+});
+
 test('both shoes touch the floor in the initial idle pose', () => {
   const scene = makeScene();
   scene.build(0);
@@ -117,6 +133,18 @@ test('the sword swing remains above the ground', () => {
   assert.ok(samples.every(y => y >= -0.005), `blade heights ${JSON.stringify(samples)}`);
 });
 
+test('the straight held sword clears the floor through both walking strides', () => {
+  const scene = makeScene();
+  const world = scene.world();
+  world.pose.walk = 1;
+  for (let phase = 0; phase <= Math.PI * 2; phase += .1) {
+    world.phase = phase;
+    scene.build(1000);
+    const blade = scene.objects.filter(object => object.part === 'arms').at(-1);
+    assert.ok(lowestPoint(blade) > .01, `blade touches floor at phase ${phase.toFixed(2)}`);
+  }
+});
+
 test('the attack carries the blade outside the face while the hand follows its arc', () => {
   const scene = makeScene();
   const world = scene.world();
@@ -136,6 +164,9 @@ test('the attack carries the blade outside the face while the hand follows its a
     assert.ok(separation > .15, `blade too close to face at ${time.toFixed(3)} s: ${separation.toFixed(3)} m`);
     if (time >= .18 && time <= .4) {
       assert.ok(scene.rig.sword.grip[12] > face[0] + .25, `windup grip crosses the face at ${time.toFixed(3)} s`);
+      const grip = scene.rig.sword.grip;
+      const screenRight = Math.cos(.53) * (grip[12] - face[0]) - Math.sin(.53) * (grip[14] - face[2]);
+      assert.ok(screenRight > .14, `windup projects over the face at ${time.toFixed(3)} s: ${screenRight.toFixed(3)} m`);
     }
     handHeights.push(position(scene.rig.arms[1].hand)[1]);
   }
