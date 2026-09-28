@@ -1,10 +1,11 @@
-'use strict';const assert=require('node:assert/strict');const C=require('../src/core.js');const {R,make,defaults,graph,connect,canConnect,validate,Engine,withJump,starter}=C;let passed=0;const names=[];
+'use strict';const assert=require('node:assert/strict');const C=require('../src/core.js');const {R,make,defaults,graph,connect,canConnect,validate,Engine,withJump,starter,blank}=C;let passed=0;const names=[];
 function test(name,fn){try{fn();passed++;names.push(name);}catch(e){console.error('FAIL',name,e);process.exitCode=1;}}
 function fresh(){return new Engine(defaults());}function run(e,n=60,dt=1/60){for(let i=0;i<n;i++)e.update(dt);return e.world;}function tap(e,key){e.controls[key]=true;e.update(1/60);e.controls[key]=false;e.update(1/60);}
 function basic(...types){return {nodes:types.map((t,i)=>make(t,t,40+i*300,60)),edges:[]};}
 test('39 explicit implemented types',()=>assert.equal(Object.keys(R).length,39));
 for(const [key,g] of Object.entries(defaults()))test('Default '+key+' validates',()=>assert.equal(validate(g,key==='anim'?'anim':'event').edges.length,g.edges.length));
 test('Default movement has no auto input',()=>assert.equal(run(fresh()).x,0));
+test('Blank project needs Blueprint connections before character actions',()=>{const e=new Engine(blank());e.controls.move=1;e.controls.jump=true;e.controls.attack=true;run(e);assert.equal(e.world.x,0);assert.equal(e.world.z,0);assert.equal(e.world.attacks,0);assert.equal(e.world.pose.walk,0);});
 test('Positive input moves forward',()=>{let e=fresh();e.controls.move=1;assert.ok(run(e).x>240);});
 test('Negative input moves backward',()=>{let e=fresh();e.controls.move=-1;assert.ok(run(e).x< -240);});
 test('No exec connection means no movement',()=>{let e=fresh();e.graphs.legs.edges=e.graphs.legs.edges.filter(x=>x.tp!=='in');e.controls.move=1;assert.equal(run(e).x,0);});

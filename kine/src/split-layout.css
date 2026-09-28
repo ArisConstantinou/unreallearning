@@ -1,0 +1,86 @@
+/* The graph and its lesson share one pane; the live character remains beside it. */
+#app.split-layout .workspace-grid{display:flex;flex-direction:column;gap:16px}
+#app.split-layout .teaching-column{display:contents}
+#app.split-layout .teaching-column>.lesson-card{order:-1}
+#app.split-layout .graph-column{order:0}
+#app.split-layout .teaching-column>.diagnosis{order:1}
+#app.split-layout .teaching-column>.trace-details{order:2}
+#app.split-layout .lesson-card{padding:18px 20px}
+#app.split-layout .lesson-card h3{font-size:21px}
+#app.split-layout .lesson-card .stage-dots{margin:14px 0}
+#app.split-layout .lesson-actions{flex-wrap:wrap}
+#app.split-layout .graph-column{width:100%}
+#app.split-layout .graph-viewport{height:clamp(380px,48svh,530px)}
+#app.split-layout .panelhead{margin-bottom:15px}
+#app.split-layout .panelhead h2{font-size:clamp(22px,2vw,28px);line-height:1.2}
+#app.split-layout .panelhead p{font-size:13px}
+#app.split-layout.guided-lesson .panelhead{display:none}
+#app.split-layout.guided-lesson .preset-label{display:none}
+#app.split-layout .tutor-section{margin-top:20px}
+.step-cue{display:none}
+
+@media (min-width:900px){
+  .apphead{position:sticky;top:0;z-index:30}
+  #app.split-layout{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);align-items:start}
+  #app.split-layout>.workshop{grid-column:1;grid-row:1;max-width:none;width:100%;min-width:0;margin:0;padding:22px clamp(18px,2vw,32px) 32px}
+  #app.split-layout>.stage{grid-column:2;grid-row:1;position:sticky;top:79px;z-index:5;width:100%;height:calc(100svh - 79px);min-height:560px;max-height:none;display:grid;grid-template-rows:minmax(0,1fr) auto auto;border-left:1px solid #33433e;border-bottom:0}
+  #app.split-layout>.settings,#app.split-layout>.pagefoot{grid-column:1/-1}
+  #app.split-layout .viewport{grid-row:1;min-height:0}
+  #app.split-layout .stage-intro{padding:20px 22px 0}
+  #app.split-layout .stage-intro h1{font-size:clamp(18px,1.8vw,27px);margin:4px 0}
+  #app.split-layout .stage-intro p{font-size:11px;max-width:270px}
+  #app.split-layout .controls{gap:12px;flex-wrap:wrap;padding:8px 12px 10px}
+  #app.split-layout .movement-controls{gap:5px}
+  #app.split-layout .control{height:51px;width:56px;flex-direction:column;gap:2px}
+  #app.split-layout .control small{font-size:9px}
+  #app.split-layout .partnav{padding:8px 18px}
+  #app.split-layout .partnav>span{right:18px}
+  #app.split-layout .viewtools{left:18px;bottom:16px}
+  #app.split-layout .scene-readout{right:18px;bottom:16px}
+  #app.split-layout .hotspot span{display:none}
+  #app.split-layout .hotspot.legs{margin-left:-55px}
+  #app.split-layout .hotspot.arms{margin-left:55px}
+  #app.split-layout.guided-lesson .lesson-card{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);column-gap:22px;align-items:start}
+  #app.split-layout.guided-lesson .lesson-card>.eyebrow{grid-column:1;grid-row:1}
+  #app.split-layout.guided-lesson .lesson-card>h3{grid-column:1;grid-row:2}
+  #app.split-layout.guided-lesson .lesson-card>p:not(.task-help){grid-column:1;grid-row:3}
+  #app.split-layout.guided-lesson .lesson-card>.stage-dots{grid-column:1;grid-row:4;align-self:center}
+  #app.split-layout.guided-lesson .lesson-card>.step-number{grid-column:2;grid-row:1}
+  #app.split-layout.guided-lesson .lesson-card>h4{grid-column:2;grid-row:2}
+  #app.split-layout.guided-lesson .lesson-card>.task-help{grid-column:2;grid-row:3}
+  #app.split-layout.guided-lesson .lesson-card>.lesson-actions{grid-column:2;grid-row:4}
+  #app.split-layout.guided-lesson .lesson-card>.secondary-actions{grid-column:2;grid-row:5}
+  #app.split-layout.guided-lesson .lesson-card>.success-mark{grid-column:2;grid-row:1}
+}
+
+@media (max-width:899px){
+  .apphead{position:sticky;top:0;z-index:30}
+  #app.split-layout{--header-h:79px;--stage-h:clamp(320px,44svh,420px);display:flex;flex-direction:column}
+  #app.split-layout>.stage{order:1;position:sticky;top:var(--header-h);z-index:8;width:100%;height:var(--stage-h);min-height:320px;max-height:none;display:grid;grid-template-rows:minmax(0,1fr) auto auto;border-bottom:1px solid #33433e}
+  #app.split-layout>.workshop{order:2;width:100%;height:calc(100svh - var(--header-h) - var(--stage-h));min-height:220px;overflow-y:auto;overscroll-behavior:contain;max-width:none;margin:0;padding:18px 15px 28px}
+  #app.split-layout>.settings{order:3}
+  #app.split-layout>.pagefoot{display:none}
+  #app.split-layout .viewport{grid-row:1;min-height:0}
+  #app.split-layout .stage-intro{padding:9px 15px 0}
+  #app.split-layout .stage-intro .eyebrow{display:none}
+  #app.split-layout .stage-intro h1{font-size:16px;margin:0}
+  #app.split-layout .stage-intro p{display:none}
+  #app.split-layout .controls{padding:6px 10px;gap:7px}
+  #app.split-layout .control{width:49px;height:43px}
+  #app.split-layout .control small{font-size:9px}
+  #app.split-layout .partnav{padding:6px 10px}
+  #app.split-layout .partnav>span{display:none}
+  #app.split-layout .viewtools{bottom:8px}
+  #app.split-layout .scene-readout{bottom:8px}
+  #app.split-layout .graph-viewport{height:360px}
+  #app.split-layout .step-cue:not([hidden]){display:block;position:sticky;top:0;z-index:10;margin:-18px -15px 12px;padding:9px 15px;background:#213d35;border-bottom:1px solid #70a98b;color:#dcf2e4;font-size:12px;font-weight:600;min-height:39px}
+}
+
+@media (max-width:760px){#app.split-layout{--header-h:64px}}
+
+@media (max-width:390px){
+  #app.split-layout .controls{gap:4px}
+  #app.split-layout .control{width:44px;padding:4px}
+  #app.split-layout .demo{padding:6px}
+  #app.split-layout .lesson-card{padding:16px}
+}

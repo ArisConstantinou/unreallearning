@@ -7,6 +7,7 @@ let html = await readFile(join(root, 'src', 'shell.html'), 'utf8');
 
 for (const [token, file] of [
   ['STYLE', 'style.css'],
+  ['SPLIT_STYLE', 'split-layout.css'],
   ['CORE', 'core.js'],
   ['CONTENT', 'content.js'],
   ['SCENE', 'scene.js'],
