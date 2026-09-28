@@ -83,19 +83,32 @@ test('the blade runs straight through the sword hand in every pose', () => {
   }
 });
 
-test('both fists present a horizontal knuckle line with the sword below the right fist', () => {
+test('a curled sword grip and a relaxed free hand have correctly rooted thumbs', () => {
   const scene = makeScene();
   scene.build(1000);
-  for (const side of [-1, 1]) {
-    const band = scene.rig.arms[side].fingerBand;
-    assert.ok(band, `missing horizontal fist on side ${side}`);
-    const width = Math.hypot(band[0], band[1], band[2]);
-    const height = Math.hypot(band[4], band[5], band[6]);
-    assert.ok(width > height * 3, `fingers still hang vertically on side ${side}`);
-  }
+  const right = scene.rig.arms[1], left = scene.rig.arms[-1];
+  assert.equal(right.fingers?.length, 8, 'four fingers must curl around the sword');
+  assert.equal(left.fingers?.length, 8, 'the free hand needs four articulated fingers');
+  assert.equal(right.thumb?.length, 2, 'the sword thumb needs two connected segments');
+  assert.equal(left.thumb?.length, 2, 'the free thumb needs two connected segments');
+  const local = (hand, object, axis) => {
+    const p = position(object), origin = position(hand);
+    return [0, 1, 2].reduce((sum, i) => sum + (p[i] - origin[i]) * hand[axis * 4 + i], 0);
+  };
+  const swordFingerHeights = [0, 2, 4, 6].map(i => local(right.hand, right.fingers[i], 1));
+  assert.ok(swordFingerHeights[0] - swordFingerHeights[3] > .08, 'sword fingers do not follow the hilt');
+  assert.ok(local(right.hand, right.thumb[0], 0) < 0 && local(right.hand, right.fingers[0], 0) > 0,
+    'sword thumb and fingers must close from opposite sides');
+  assert.ok(local(right.hand, right.thumb[1], 0) > local(right.hand, right.thumb[0], 0),
+    'sword thumb tip must curl toward the handle');
+  assert.ok(local(left.hand, left.fingers[1], 1) < -.12, 'free fingers should hang below the palm');
+  assert.ok(local(left.hand, left.thumb[0], 0) > 0 && local(left.hand, left.thumb[1], 0) > local(left.hand, left.thumb[0], 0),
+    'free thumb should grow from the inner edge of the palm');
   const guard = point(scene.rig.sword.grip, [0, .135, 0]);
-  const fist = position(scene.rig.arms[1].fingerBand);
-  assert.ok(guard[1] < fist[1] - .01, 'sword guard does not exit below the fist');
+  const handOrigin = position(right.hand);
+  const guardHeight = [0, 1, 2].reduce((sum, i) => sum + (guard[i] - handOrigin[i]) * right.hand[4 + i], 0);
+  const lowestFinger = Math.min(...right.fingers.map(finger => local(right.hand, finger, 1)));
+  assert.ok(guardHeight < lowestFinger - .01, 'sword guard does not exit below the fist');
 });
 
 test('the handle sits in front of the palm and the guard rests below the curled fingers', () => {
