@@ -83,6 +83,21 @@ test('the blade runs straight through the sword hand in every pose', () => {
   }
 });
 
+test('both fists present a horizontal knuckle line with the sword below the right fist', () => {
+  const scene = makeScene();
+  scene.build(1000);
+  for (const side of [-1, 1]) {
+    const band = scene.rig.arms[side].fingerBand;
+    assert.ok(band, `missing horizontal fist on side ${side}`);
+    const width = Math.hypot(band[0], band[1], band[2]);
+    const height = Math.hypot(band[4], band[5], band[6]);
+    assert.ok(width > height * 3, `fingers still hang vertically on side ${side}`);
+  }
+  const guard = point(scene.rig.sword.grip, [0, .135, 0]);
+  const fist = position(scene.rig.arms[1].fingerBand);
+  assert.ok(guard[1] < fist[1] - .01, 'sword guard does not exit below the fist');
+});
+
 test('the handle sits in front of the palm and the guard rests below the curled fingers', () => {
   const scene = makeScene();
   const world = scene.world();
