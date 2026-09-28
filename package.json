@@ -1,0 +1,9 @@
+{
+  "name": "unreallearning",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Dungeon Mentor static learning lab",
+  "scripts": {
+    "test": "node --test tests/*.test.cjs"
+  }
+}
