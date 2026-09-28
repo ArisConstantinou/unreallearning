@@ -29,6 +29,42 @@ function lowestLegPoints(scene) {
   return scene.objects.filter(object => object.part === 'legs').map(lowestPoint).sort((a, b) => a - b).slice(0, 2);
 }
 
+function position(m) { return m.slice(12, 15); }
+
+test('walking gives each leg its own stride and lift', () => {
+  const scene = makeScene();
+  const world = scene.world();
+  world.pose.walk = 1;
+  const samples = [-Math.PI / 2, 0, Math.PI / 2, Math.PI].map(phase => {
+    world.phase = phase;
+    scene.build(1000);
+    return [-1, 1].map(side => scene.rig?.legs?.[side]?.foot && position(scene.rig.legs[side].foot));
+  });
+  for (const side of [0, 1]) {
+    const foot = samples.map(pair => pair[side]);
+    assert.ok(foot.every(Boolean), `missing articulated foot ${side}`);
+    assert.ok(Math.max(...foot.map(p => p[2])) - Math.min(...foot.map(p => p[2])) > .25);
+    assert.ok(Math.max(...foot.map(p => p[1])) - Math.min(...foot.map(p => p[1])) > .09);
+  }
+  assert.ok(samples[1][0][1] > samples[1][1][1] + .09, 'legs must lift on opposite beats');
+});
+
+test('both arms swing independently and the sword stays fixed in the right grip', () => {
+  const scene = makeScene();
+  const world = scene.world();
+  world.pose.walk = 1;
+  const hands = [-Math.PI / 2, Math.PI / 2].map(phase => {
+    world.phase = phase;
+    scene.build(1000);
+    assert.ok(scene.rig?.arms?.[-1]?.hand && scene.rig?.arms?.[1]?.hand && scene.rig?.sword?.grip);
+    const right = position(scene.rig.arms[1].hand), grip = position(scene.rig.sword.grip);
+    assert.ok(Math.hypot(...right.map((v, i) => v - grip[i])) < .09, 'sword grip leaves hand');
+    return [-1, 1].map(side => position(scene.rig.arms[side].hand));
+  });
+  for (const side of [0, 1]) assert.ok(Math.abs(hands[0][side][2] - hands[1][side][2]) > .12);
+  assert.ok((hands[0][0][2] - hands[1][0][2]) * (hands[0][1][2] - hands[1][1][2]) < 0);
+});
+
 test('both shoes touch the floor in the initial idle pose', () => {
   const scene = makeScene();
   scene.build(0);
@@ -79,6 +115,28 @@ test('the sword swing remains above the ground', () => {
     samples.push(Number(lowestPoint(blade).toFixed(3)));
   }
   assert.ok(samples.every(y => y >= -0.005), `blade heights ${JSON.stringify(samples)}`);
+});
+
+test('the attack carries the blade outside the face while the hand follows its arc', () => {
+  const scene = makeScene();
+  const world = scene.world();
+  world.pose.attack = 1;
+  const handHeights = [];
+  for (let time = 0; time <= 1.1; time += .025) {
+    world.montageTime = time;
+    scene.build(time * 1000);
+    const blade = scene.objects.filter(object => object.part === 'arms').at(-1);
+    const face = scene.points.head;
+    const m = blade.m, data = blade.geom.data;
+    let separation = Infinity;
+    for (let i = 0; i < data.length; i += 6) {
+      const p = [m[0]*data[i]+m[4]*data[i+1]+m[8]*data[i+2]+m[12],m[1]*data[i]+m[5]*data[i+1]+m[9]*data[i+2]+m[13],m[2]*data[i]+m[6]*data[i+1]+m[10]*data[i+2]+m[14]];
+      separation = Math.min(separation, Math.hypot(...p.map((v, j) => v - face[j])));
+    }
+    assert.ok(separation > .15, `blade too close to face at ${time.toFixed(3)} s: ${separation.toFixed(3)} m`);
+    handHeights.push(position(scene.rig.arms[1].hand)[1]);
+  }
+  assert.ok(Math.max(...handHeights) - Math.min(...handHeights) > .35, 'sword hand needs a visible attack arc');
 });
 
 test('idle animation follows simulation time so pause freezes the pose', () => {
