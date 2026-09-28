@@ -1,4 +1,4 @@
-'use strict';const assert=require('node:assert/strict');const C=require('../src/core.js');const {R,make,defaults,graph,connect,canConnect,validate,Engine,withJump}=C;let passed=0;const names=[];
+'use strict';const assert=require('node:assert/strict');const C=require('../src/core.js');const {R,make,defaults,graph,connect,canConnect,validate,Engine,withJump,starter}=C;let passed=0;const names=[];
 function test(name,fn){try{fn();passed++;names.push(name);}catch(e){console.error('FAIL',name,e);process.exitCode=1;}}
 function fresh(){return new Engine(defaults());}function run(e,n=60,dt=1/60){for(let i=0;i<n;i++)e.update(dt);return e.world;}function tap(e,key){e.controls[key]=true;e.update(1/60);e.controls[key]=false;e.update(1/60);}
 function basic(...types){return {nodes:types.map((t,i)=>make(t,t,40+i*300,60)),edges:[]};}
@@ -24,6 +24,7 @@ test('Self cycle rejected',()=>{let g=basic('multiply');assert.ok(canConnect(g,'
 test('Indirect cycle rejected',()=>{let g=basic('multiply','clamp');connect(g,'multiply','value','clamp','value');assert.ok(canConnect(g,'clamp','value','multiply','a'));});
 test('Unknown pin rejected',()=>{let g=basic('begin','print');assert.ok(canConnect(g,'begin','bogus','print','in'));});
 test('Jump preset rises',()=>{let e=fresh();e.graphs.legs=withJump(e.graphs.legs);tap(e,'jump');assert.ok(e.world.z>0);});
+test('Starter character jumps while the walk lesson stays isolated',()=>{const e=new Engine(starter());tap(e,'jump');assert.ok(e.world.z>0);assert.equal(e.world.jumps,1);assert.equal(defaults().legs.nodes.some(n=>n.type==='jump'),false);});
 test('Jump returns to floor',()=>{let e=fresh();e.graphs.legs=withJump(e.graphs.legs);tap(e,'jump');assert.equal(run(e,100).z,0);assert.equal(e.world.grounded,true);});
 test('Jump stops on Completed',()=>{let e=fresh();e.graphs.legs=withJump(e.graphs.legs);tap(e,'jump');assert.equal(e.world.jumpHeld,false);});
 test('Jump Canceled executes StopJump',()=>{let e=fresh();e.graphs.legs=withJump(e.graphs.legs);e.controls.jump=true;e.update(.01);e.cancel();assert.equal(e.world.jumpHeld,false);});

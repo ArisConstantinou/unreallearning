@@ -30,6 +30,7 @@ function lowestLegPoints(scene) {
 }
 
 function position(m) { return m.slice(12, 15); }
+function point(m, p) { return [m[0]*p[0]+m[4]*p[1]+m[8]*p[2]+m[12],m[1]*p[0]+m[5]*p[1]+m[9]*p[2]+m[13],m[2]*p[0]+m[6]*p[1]+m[10]*p[2]+m[14]]; }
 
 test('walking gives each leg its own stride and lift', () => {
   const scene = makeScene();
@@ -78,6 +79,19 @@ test('the blade runs straight through the sword hand in every pose', () => {
     const bladeAxis = [sword[4], sword[5], sword[6]];
     const alignment = handAxis.reduce((sum, value, i) => sum + value * bladeAxis[i], 0);
     assert.ok(alignment > .98, `crooked grip in pose ${JSON.stringify([walk, phase, attack, montageTime])}: ${alignment}`);
+  }
+});
+
+test('the sword guard meets the gripping fingers instead of hanging below them', () => {
+  const scene = makeScene();
+  const world = scene.world();
+  for (const attack of [0, 1]) {
+    world.pose.attack = attack;
+    world.montageTime = attack ? .3 : 0;
+    scene.build(1000);
+    const guard = point(scene.rig.sword.grip, [0, .135, 0]);
+    const fingers = point(scene.rig.arms[1].hand, [0, -.06, .067]);
+    assert.ok(Math.hypot(...guard.map((v, i) => v - fingers[i])) < .055, 'guard is detached from the hand');
   }
 });
 
