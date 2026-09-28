@@ -4,6 +4,7 @@
   "private": true,
   "description": "Dungeon Mentor static learning lab",
   "scripts": {
-    "test": "node --test tests/*.test.cjs"
+    "build:kine": "node kine/build.mjs",
+    "test": "node --test tests/*.test.cjs kine/tests/*.test.cjs"
   }
 }
